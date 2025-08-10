@@ -1,3 +1,4 @@
+import torch
 from torch import nn
 from .sequential_block import SequentialBlock
 
@@ -16,7 +17,7 @@ class GRUBlock(SequentialBlock):
         self.tanh = nn.Tanh()
         self.sigmoid = nn.Sigmoid()
 
-    def forward(self, x_t, h_prev):
+    def forward(self, x_t: torch.Tensor, h_prev: torch.Tensor) -> torch.Tensor:
         z_t = self.sigmoid(self.w_z(x_t) + self.u_z(h_prev))
         r_t = self.sigmoid(self.w_r(x_t) + self.u_r(h_prev))
         h_t_candidate = self.tanh(self.w_h(x_t) + self.u_h(r_t * h_prev))

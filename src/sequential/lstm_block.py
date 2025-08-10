@@ -1,3 +1,4 @@
+import torch
 from torch import nn
 from .sequential_block import SequentialBlock
 
@@ -18,7 +19,7 @@ class LSTMBlock(SequentialBlock):
         self.sigmoid = nn.Sigmoid()
         self.tanh = nn.Tanh()
 
-    def forward(self, x_t, h_prev, c_prev):
+    def forward(self, x_t: torch.Tensor, h_prev: torch.Tensor, c_prev: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor]:
         forget_gate = self.sigmoid(self.w_f(x_t) + self.u_f(h_prev))
         input_gate = self.sigmoid(self.w_i(x_t) + self.u_i(h_prev))
         output_gate = self.sigmoid(self.w_o(x_t) + self.u_o(h_prev))

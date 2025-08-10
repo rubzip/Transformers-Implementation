@@ -1,11 +1,11 @@
-from abc import ABC, abstractmethod
+from abc import abstractmethod
 from torch import nn
 import torch
 
 from .sequential_block import SequentialBlock
 
 
-class SequentialModel(nn.Module, ABC):
+class SequentialModel(nn.Module):
     def __init__(
         self, x_dim: int, h_dim: int, out_dim: int, block_class: SequentialBlock
     ):
@@ -16,12 +16,14 @@ class SequentialModel(nn.Module, ABC):
         self.out_layer = nn.Linear(h_dim, out_dim)
 
     @abstractmethod
-    def forward(self, x):
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
         pass
 
 
 class SequentialManyToMany(SequentialModel):
-    def __init__(self, x_dim, h_dim, out_dim, block_class):
+    def __init__(
+        self, x_dim: int, h_dim: int, out_dim: int, block_class: SequentialBlock
+    ):
         super().__init__(x_dim, h_dim, out_dim, block_class)
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
@@ -42,7 +44,9 @@ class SequentialManyToMany(SequentialModel):
 
 
 class SequentialManyToOne(SequentialModel):
-    def __init__(self, x_dim, h_dim, out_dim, block_class):
+    def __init__(
+        self, x_dim: int, h_dim: int, out_dim: int, block_class: SequentialBlock
+    ):
         super().__init__(x_dim, h_dim, out_dim, block_class)
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:

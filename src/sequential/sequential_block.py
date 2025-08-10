@@ -1,8 +1,9 @@
-from abc import ABC, abstractmethod
+from abc import abstractmethod
+import torch
 from torch import nn
 
 
-class SequentialBlock(nn.Module, ABC):
+class SequentialBlock(nn.Module):
     """Sequential Block Interface"""
 
     def __init__(self, uses_c: bool = False):
@@ -14,5 +15,5 @@ class SequentialBlock(nn.Module, ABC):
         return self._uses_c
 
     @abstractmethod
-    def forward(self, x, h_prev, c_prev=None):
+    def forward(self, x: torch.Tensor, h_prev: torch.Tensor, c_prev: torch.Tensor=None):
         pass

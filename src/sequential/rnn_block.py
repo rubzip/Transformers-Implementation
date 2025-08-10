@@ -1,3 +1,4 @@
+import torch
 from torch import nn
 from .sequential_block import SequentialBlock
 
@@ -11,7 +12,7 @@ class RNNBlock(SequentialBlock):
         self.state_layer = nn.Linear(h_dim, h_dim, bias=False)  # As we are adding f(x) + g(h) only 1 bias is needed (bc they are added)
         self.act_fn = act_fn
 
-    def forward(self, x, h_prev):
+    def forward(self, x: torch.Tensor, h_prev: torch.Tensor) -> torch.Tensor:
         x_forward = self.context_layer(x)
         h_forward = self.state_layer(h_prev)
         h = self.act_fn(x_forward + h_forward)
