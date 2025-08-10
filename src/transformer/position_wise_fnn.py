@@ -1,7 +1,10 @@
 import torch
 from torch import nn
 
-class PositionWiseFNN(nn.Module):
+
+class PositionWiseFFN(nn.Module):
+    """Position-wise Feed-Forward Networks, works as two convolutions with kernel size 1."""
+
     def __init__(self, d_model: int, d_ff: int):
         super().__init__()
         self.fc1 = nn.Linear(d_model, d_ff)
