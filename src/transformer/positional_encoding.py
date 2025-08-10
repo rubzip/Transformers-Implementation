@@ -3,7 +3,7 @@ from torch import nn
 
 
 class PositionalEncoding(nn.Module):
-    def __init__(self, seq_len: int, d_model: int, divisor: float = 10_000.0):
+    def __init__(self, seq_len: int, d_model: int, divisor: float = 10000.0):
         super().__init__()
         self.seq_len = seq_len
         self.d_model = d_model
