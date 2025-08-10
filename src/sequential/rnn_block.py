@@ -4,6 +4,8 @@ from .sequential_block import SequentialBlock
 
 
 class RNNBlock(SequentialBlock):
+    """Recurrent Neural Network Block"""
+
     def __init__(
         self, x_dim: int, h_dim: int, act_fn: nn.Module = nn.ReLU(), bias: bool = True
     ):

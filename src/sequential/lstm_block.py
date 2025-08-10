@@ -4,6 +4,8 @@ from .sequential_block import SequentialBlock
 
 
 class LSTMBlock(SequentialBlock):
+    """Long Short-Term Memory Block"""
+
     def __init__(self, x_dim: int, h_dim: int, bias: bool = True):
         super().__init__(uses_c=True)
         self.w_f = nn.Linear(x_dim, h_dim, bias=bias)

@@ -4,6 +4,8 @@ from .sequential_block import SequentialBlock
 
 
 class GRUBlock(SequentialBlock):
+    """Gated Recurrent Unit"""
+
     def __init__(self, x_dim: int, h_dim: int, bias: bool = True):
         super().__init__(uses_c=False)
         self.w_z = nn.Linear(x_dim, h_dim, bias=bias)

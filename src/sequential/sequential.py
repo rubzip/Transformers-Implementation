@@ -6,6 +6,8 @@ from .sequential_block import SequentialBlock
 
 
 class SequentialModel(nn.Module):
+    """Sequential Model Interface"""
+
     def __init__(
         self, x_dim: int, h_dim: int, out_dim: int, block_class: SequentialBlock
     ):
@@ -21,6 +23,8 @@ class SequentialModel(nn.Module):
 
 
 class SequentialManyToMany(SequentialModel):
+    """Sequential Model N to N"""
+
     def __init__(
         self, x_dim: int, h_dim: int, out_dim: int, block_class: SequentialBlock
     ):
@@ -44,6 +48,8 @@ class SequentialManyToMany(SequentialModel):
 
 
 class SequentialManyToOne(SequentialModel):
+    """Sequential Model N to 1"""
+
     def __init__(
         self, x_dim: int, h_dim: int, out_dim: int, block_class: SequentialBlock
     ):
