@@ -21,13 +21,15 @@ class LSTMBlock(SequentialBlock):
         self.sigmoid = nn.Sigmoid()
         self.tanh = nn.Tanh()
 
-    def forward(self, x_t: torch.Tensor, h_prev: torch.Tensor, c_prev: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor]:
-        forget_gate = self.sigmoid(self.w_f(x_t) + self.u_f(h_prev))
-        input_gate = self.sigmoid(self.w_i(x_t) + self.u_i(h_prev))
-        output_gate = self.sigmoid(self.w_o(x_t) + self.u_o(h_prev))
-        cell_candidate = self.tanh(self.w_c(x_t) + self.u_c(h_prev))
+    def forward(
+        self, x_t: torch.Tensor, h_prev: torch.Tensor, c_prev: torch.Tensor
+    ) -> tuple[torch.Tensor, torch.Tensor]:
+        f_t = self.sigmoid(self.w_f(x_t) + self.u_f(h_prev))
+        i_t = self.sigmoid(self.w_i(x_t) + self.u_i(h_prev))
+        o_t = self.sigmoid(self.w_o(x_t) + self.u_o(h_prev))
+        c_t_candidate = self.tanh(self.w_c(x_t) + self.u_c(h_prev))
 
-        cell_state = forget_gate * c_prev + input_gate * cell_candidate
-        hidden_state = output_gate * self.tanh(cell_state)
+        c_t = f_t * c_prev + i_t * c_t_candidate
+        h_t = o_t * self.tanh(c_t)
 
-        return hidden_state, cell_state
+        return h_t, c_t

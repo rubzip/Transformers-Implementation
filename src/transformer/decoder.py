@@ -4,32 +4,38 @@ from torch import nn
 from .attention import MultiHeadAttention
 from .position_wise_fnn import PositionWiseFNN
 
-class EncoderLayer(nn.Module):
+class DecoderLayer(nn.Module):
     def __init__(self, d_model: int, d_ff: int, h: int):
         super().__init__()
+        self.masked_multi_head_attention = MultiHeadAttention(d_model=d_model, h=h)
         self.multi_head_attention = MultiHeadAttention(d_model=d_model, h=h)
         self.feed_forward = PositionWiseFNN(d_model=d_model, d_ff=d_ff)
-        self.norm1 = nn.LayerNorm(d_model)
-        self.norm2 = nn.LayerNorm(d_model)
+
+        self.norm1, self.norm2, self.norm3 = [
+            nn.LayerNorm(d_model) for _ in range(3)
+        ]
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
-        att_out = self.multi_head_attention(x)
+        att_out = self.masked_multi_head_attention(x)
         x = self.norm1(x + att_out)
 
+        att_out = self.multi_head_attention(x)
+        x = self.norm2(x + att_out)
+
         ff_out = self.feed_forward(x)
-        x = self.norm2(x + ff_out)
+        x = self.norm3(x + ff_out)
         return x
 
-class Encoder(nn.Module):
+class Decoder(nn.Module):
     def __init__(self, d_model: int, d_ff: int, h: int, n: int = 6):
         super().__init__()
         self.layers = nn.ModuleList([
-            EncoderLayer(d_model=d_model, d_ff=d_ff, h=h)
+            DecoderLayer(d_model=d_model, d_ff=d_ff, h=h)
             for _ in range(n)
         ])
-    
-    def forward(self, in_emb: torch.Tensor, pos_emb: torch.Tensor) -> torch.Tensor:
-        x = in_emb + pos_emb
+
+    def forward(self, out_emb: torch.Tensor, pos_emb: torch.Tensor, enc_emb: torch.Tensor) -> torch.Tensor:
+        x = out_emb + pos_emb
         for layer in self.layers:
             x = layer(x)
         return x
