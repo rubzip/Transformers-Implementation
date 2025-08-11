@@ -48,6 +48,7 @@ def load_imbd(
 
     return train_loader, test_loader, vocab_size
 
+
 def train_one_epoch(model, dataloader, optimizer, criterion, device):
     model.train()
     running_loss = 0.0
@@ -70,6 +71,7 @@ def train_one_epoch(model, dataloader, optimizer, criterion, device):
     avg_loss = running_loss / total
     accuracy = correct / total
     return avg_loss, accuracy
+
 
 def validate(model, dataloader, criterion, device):
     model.eval()
