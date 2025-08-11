@@ -6,7 +6,7 @@ from src.transformer.positional_encoding import PositionalEncoding
 BATCH = 4
 SEQ_LEN = 10
 D_MODEL = 16
-pe = PositionalEncoding(seq_len=SEQ_LEN, d_model=D_MODEL)
+pe = PositionalEncoding(max_seq_len=SEQ_LEN, d_model=D_MODEL)
 x = torch.zeros(BATCH, SEQ_LEN, D_MODEL)
 
 
