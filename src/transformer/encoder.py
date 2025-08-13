@@ -3,7 +3,7 @@ from torch import nn
 
 from .attention import MultiHeadAttention
 from .position_wise_fnn import PositionWiseFFN
-
+from .add_and_norm import AddAndNorm
 
 class EncoderLayer(nn.Module):
     """Transformer's Encoder Layer"""
@@ -12,15 +12,15 @@ class EncoderLayer(nn.Module):
         super().__init__()
         self.multi_head_attention = MultiHeadAttention(d_model=d_model, h=h)
         self.feed_forward = PositionWiseFFN(d_model=d_model, d_ff=d_ff)
-        self.norm1 = nn.LayerNorm(d_model)
-        self.norm2 = nn.LayerNorm(d_model)
+        self.add_norm_1 = AddAndNorm(d_model)
+        self.add_norm_2 = AddAndNorm(d_model)
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         att_out = self.multi_head_attention(x)
-        x = self.norm1(x + att_out)
+        x = self.add_norm_1(x, att_out)
 
         ff_out = self.feed_forward(x)
-        x = self.norm2(x + ff_out)
+        x = self.add_norm_2(x, ff_out)
         return x
 
 

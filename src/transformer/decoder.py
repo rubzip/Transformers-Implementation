@@ -3,7 +3,7 @@ from torch import nn
 
 from .attention import MultiHeadAttention
 from .position_wise_fnn import PositionWiseFFN
-
+from .add_and_norm import AddAndNorm
 
 class DecoderLayer(nn.Module):
     """Transformer's Decoder Layer"""
@@ -14,17 +14,19 @@ class DecoderLayer(nn.Module):
         self.multi_head_attention = MultiHeadAttention(d_model=d_model, h=h)
         self.feed_forward = PositionWiseFFN(d_model=d_model, d_ff=d_ff)
 
-        self.norm1, self.norm2, self.norm3 = [nn.LayerNorm(d_model) for _ in range(3)]
+        self.add_norm_1, self.add_norm_2, self.add_norm_3 = [
+            AddAndNorm(d_model) for _ in range(3)
+        ]
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         att_out = self.masked_multi_head_attention(x)
-        x = self.norm1(x + att_out)
+        x = self.add_norm_1(x, att_out)
 
         att_out = self.multi_head_attention(x)
-        x = self.norm2(x + att_out)
+        x = self.add_norm_2(x, att_out)
 
         ff_out = self.feed_forward(x)
-        x = self.norm3(x + ff_out)
+        x = self.add_norm_3(x, ff_out)
         return x
 
 
