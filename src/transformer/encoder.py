@@ -29,12 +29,12 @@ class Encoder(nn.Module):
 
     def __init__(self, d_model: int, d_ff: int, h: int, n: int = 6):
         super().__init__()
-        self.layers = nn.ModuleList(
+        self.encoder_layers = nn.ModuleList(
             [EncoderLayer(d_model=d_model, d_ff=d_ff, h=h) for _ in range(n)]
         )
 
     def forward(self, in_emb: torch.Tensor, pos_emb: torch.Tensor) -> torch.Tensor:
         x = in_emb + pos_emb
-        for layer in self.layers:
-            x = layer(x)
+        for encoder_layer in self.encoder_layers:
+            x = encoder_layer(x)
         return x

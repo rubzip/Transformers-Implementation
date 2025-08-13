@@ -1,7 +1,10 @@
 import torch
 from torch import nn
 
+
 class AddAndNorm(nn.Module):
+    """Add & Norm Layer"""
+
     def __init__(self, d: int):
         super().__init__()
         self.norm = nn.LayerNorm(d)

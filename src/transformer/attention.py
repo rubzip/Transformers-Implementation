@@ -5,7 +5,7 @@ from torch import nn
 class AttentionLayer(nn.Module):
     """Scaled Dot-Product Attention"""
 
-    def __init__(self, d_model: int, d_k: int, d_v: int):
+    def __init__(self, d_model: int, d_k: int, d_v: int, masking: False):
         super().__init__()
         self.d_model = d_model
         self.d_k = d_k
@@ -17,13 +17,20 @@ class AttentionLayer(nn.Module):
         self.w_v = nn.Linear(d_model, d_v)
 
         self.softmax = nn.Softmax(dim=-1)
+        self.masking = masking
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         query = self.w_q(x)
         key = self.w_k(x)
         value = self.w_v(x)
 
-        score = self.softmax((query @ key.transpose(-2, -1)) / self.d_k_sqrt)
+        attention = (query @ key.transpose(-2, -1)) / self.d_k_sqrt
+        if self.masking:
+            seq_len = attention.size(-1)
+            mask = torch.triu(torch.ones(seq_len, seq_len, device=attention.device), diagonal=1)
+            attention = attention.masked_fill(mask.bool(), float('-inf'))
+
+        score = self.softmax(attention)
         context = score @ value
         return context
 
