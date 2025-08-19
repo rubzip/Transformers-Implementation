@@ -5,7 +5,7 @@ from torch import nn
 class AttentionLayer(nn.Module):
     """Scaled Dot-Product Attention"""
 
-    def __init__(self, d_model: int, d_k: int, d_v: int, masking: False):
+    def __init__(self, d_model: int, d_k: int, d_v: int, masking: bool = False):
         super().__init__()
         self.d_model = d_model
         self.d_k = d_k
@@ -38,7 +38,7 @@ class AttentionLayer(nn.Module):
 class MultiHeadAttention(nn.Module):
     """MultiHead Attention"""
 
-    def __init__(self, d_model: int, h: int):
+    def __init__(self, d_model: int, h: int, masking: bool = False):
         super().__init__()
         assert d_model % h == 0, "d_model must be divisible by h"
         self.d_model = d_model
@@ -47,7 +47,7 @@ class MultiHeadAttention(nn.Module):
         self.d_v = d_model // h
 
         self.w_heads = nn.ModuleList([
-            AttentionLayer(d_model, self.d_k, self.d_v) for _ in range(h)
+            AttentionLayer(d_model, self.d_k, self.d_v, masking) for _ in range(h)
         ])
         self.w_o = nn.Linear(h * self.d_v, d_model)
 
